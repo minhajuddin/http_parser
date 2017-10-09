@@ -3,14 +3,20 @@ defmodule HttpParserTest do
   doctest HttpParser
 
   alias HttpParser.Request
+  import HttpParser, only: [create_request: 1]
 
   def req(path \\ "/foobar"), do: %Request{uri: URI.parse("https://localhost:4000#{path}")}
 
-  describe "GET create_request" do
-    import HttpParser, only: [create_request: 1]
+  describe "create_request" do
 
-    test "uses the right verb" do
-      assert "GET " <> _ = req() |> create_request
+    test "uses the right method" do
+      assert %{req() | method: :get} |> create_request =~ ~r(^GET )
+      assert %{req() | method: :post} |> create_request =~ ~r(^POST )
+      assert %{req() | method: :patch} |> create_request =~ ~r(^PATCH )
+      assert %{req() | method: :head} |> create_request =~ ~r(^HEAD )
+      assert %{req() | method: :delete} |> create_request =~ ~r(^DELETE )
+      assert %{req() | method: :put} |> create_request =~ ~r(^PUT )
+      assert %{req() | method: :options} |> create_request =~ ~r(^OPTIONS )
     end
 
     test "sets the path" do
@@ -49,7 +55,7 @@ defmodule HttpParserTest do
       assert r |> create_request |> String.contains?("HTTP/1.0")
     end
 
-    test "creates a complex request" do
+    test "creates a complex GET request" do
       r = %Request{
         uri: URI.parse("https://dannyisawesome.com/romeo-AND-juliet?by=dire-straits#juliet-juliet"),
         headers: [
