@@ -29,6 +29,10 @@ defmodule HttpParserTest do
       refute req() |> create_request |> String.replace("\r\n", "") |> String.contains?("\n")
     end
 
+    test "adds an empty line at the end" do
+      assert req() |> create_request =~ ~r(\r\n\r\n$)
+    end
+
     test "appends headers" do
       r = req()
       r = %{r | headers: [{"User-Agent", "danny"}, {"Accept", "html"}]}
@@ -59,7 +63,8 @@ GET /romeo-AND-juliet?by=dire-straits HTTP/1.1\r\n\
 Host: dannyisawesome.com\r\n\
 Content/Type: application/json\r\n\
 Accept: application/json\r\n\
-User-Agent: dann\r\n"
+User-Agent: dann\r\n\
+\r\n"
     end
 
   end

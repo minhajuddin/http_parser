@@ -11,11 +11,14 @@ defmodule HttpParser do
 
   def create_request(%Request{} = rq) do
     [
+      # headers
       "GET ", path(rq.uri), @space, http_version_text(rq.http_version),
       @line_break,
       "Host: ", rq.uri.host,
       @line_break,
-      rq.headers |> Enum.map(&render_header/1), # ends with a line_break
+      rq.headers |> Enum.map(&render_header/1),
+      @line_break,
+      # end of headers
     ]
     |> IO.iodata_to_binary
   end
