@@ -19,6 +19,10 @@ defmodule HttpParserTest do
       assert %{req() | method: :options} |> create_request =~ ~r(^OPTIONS )
     end
 
+    test "sets the path even when it is nil" do
+      assert "GET / HTTP" <> _ = %{req()| uri: URI.parse("http://danny.boy")} |> create_request
+    end
+
     test "sets the path" do
       assert "GET /foobar HTTP" <> _ = req() |> create_request
     end
