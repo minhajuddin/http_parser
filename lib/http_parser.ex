@@ -3,27 +3,29 @@ defmodule HttpParser do
   @space " "
 
   defmodule Request do
-    defstruct uri: %URI{},
-      method: :get,
-      http_version: :http1_1,
-      headers: [], # e.g. [{"User-Agent", "Danny"}, {"Accept", "text/html"}]
-      body: [] # iodata/iolist
+    # headers e.g. [{"User-Agent", "Danny"}, {"Accept", "text/html"}]
+    # body type iodata/iolist
+    defstruct uri: %URI{}, method: :get, http_version: :http1_1, headers: [], body: []
   end
 
   def create_request(%Request{} = request) do
     [
       # headers
       # GET /foobar HTTP/1.1
-      method_text(request.method), @space, path(request.uri), @space, http_version_text(request.http_version),
+      method_text(request.method),
+      @space,
+      path(request.uri),
+      @space,
+      http_version_text(request.http_version),
       @line_break,
-      "Host: ", request.uri.host,
+      "Host: ",
+      request.uri.host,
       @line_break,
       request.headers |> Enum.map(&render_header/1),
       @line_break,
       # end of headers
       request.body
     ]
-    |> IO.iodata_to_binary()
   end
 
   defp render_header({name, value}), do: [name, ?:, @space, value, @line_break]
