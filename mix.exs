@@ -5,7 +5,7 @@ defmodule HttpParser.Mixfile do
     [
       app: :http_parser,
       description: "A complete HTTP parser written in pure Elixir",
-      version: "0.1.0",
+      version: "0.1.1",
       elixir: "~> 1.5",
       start_permanent: Mix.env == :prod,
       deps: deps(),
